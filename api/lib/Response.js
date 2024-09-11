@@ -24,8 +24,17 @@ class Response {
               description:error.description
             }
           }
+        } 
+        else if(error.message.includes("E11000")) {
+        return  {
+                code:Enum.HTTP_CODES.BAD_REQUEST,
+                error: {
+                  message:"AlreadyExist !",
+                  description:"Already exist !"
+                }
+              }
+        
         }
-
       return  {
               code:Enum.HTTP_CODES.INT_SERVER_ERROR,
               error: {

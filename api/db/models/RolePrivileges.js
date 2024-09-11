@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
-
+/*role_id  roles tablosundaki _id ye denk geliyor
+  permission role_privileges  deki key alanına denk geliyor
+  created_by  kimin eklediğini tutuyor
+*/
 const schema = mongoose.Schema({
     role_id: { type: mongoose.SchemaTypes.ObjectId, required: true },
     permission: { type: String, required: true },
@@ -11,7 +14,6 @@ const schema = mongoose.Schema({
         updatedAt: "updated_at"
     }
 });
-
 class RolePrivileges extends mongoose.Model {
 
 }
