@@ -77,7 +77,7 @@ router.post("/delete", async (req, res) => {
   
     if(!body._id) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST,"Validation error!","_id field must be filled")
   
-      await Categories.deleteOne({ _id: body._id });
+      await Categories.deleteOne({ _id: body._id });// mogosse da artık remove yerine deleteOne kullanıyoruz
 
       res.json(Response.successResponse({ success: true }));
    }
