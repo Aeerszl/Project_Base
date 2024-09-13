@@ -1,7 +1,7 @@
 const mongoose = require("mongoose"); //mongoose, MongoDB veritabanıyla etkileşim kurmak için kullanılan bir Node.js kütüphanesidir.
 
 const schema = mongoose.Schema({
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },//unique aynı kullanıcıdan iki tane oluşturulmasını engeller
     password: { type: String, required: true },
     is_active: { type: Boolean, default: true },
     first_name: String,

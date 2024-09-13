@@ -19,7 +19,9 @@ module.exports = {
         TOO_MANY_REQUESTS: 429,
         INT_SERVER_ERROR: 500,
         BAD_GATEWAY: 502
-    }
+    },
+    PASS_LENGHT:8,
+    SUPER_ADMIN: "SUPER_ADMIN",
 
    
 }
