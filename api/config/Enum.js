@@ -22,6 +22,14 @@ module.exports = {
     },
     PASS_LENGHT:8,
     SUPER_ADMIN: "SUPER_ADMIN",
+    LOG_LEVELS: {
+        INFO: "INFO",
+        WARN: "WARN",
+        ERROR: "ERROR",
+        DEBUG: "DEBUG",
+        VERBOSE: "VERBOSE",
+        HTTP: "HTTP"
+    }
 
-   
+    
 }
