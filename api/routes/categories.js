@@ -18,7 +18,8 @@ const AuditLogs = require("../lib/AuditLogs");
 
 
 /* GET users listing. */
-router.get('/', async(req, res, next)=> {
+// eslint-disable-next-line no-unused-vars
+router.get('/', async(req, res,next )=> {
   try{
     let categories = await Categories.find();//await kulanacaksan async kullanmalısın
     res.json(Response.successResponse(categories));//bize donen veriyi json formatında döndürüyoruz
@@ -30,7 +31,7 @@ router.get('/', async(req, res, next)=> {
     res.status(errorResponse.code).json(Response.errorResponse(err));
             }
 });
-router.post("/add", async(req, res, next)=> {
+router.post("/add", async(req, res, )=> {
      let body = req.body
      try{
 
