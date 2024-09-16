@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 var express = require('express');
 const bcrypt = require("bcrypt-nodejs");
 const is= require('is_js');//is_js kütüphanesi ile veri türü kontrolü yapılabilir
@@ -9,6 +10,7 @@ const Enum = require('../config/Enum');
 const UserRoles = require('../db/models/UserRoles');
 const Roles = require('../db/models/Roles');
 /* GET users listing. */
+// eslint-disable-next-line no-unused-vars
 router.get('/', async(req, res, next) =>{
 try{
   let users = await Users.find();
@@ -22,6 +24,7 @@ res.status(errorResponse.status).json(errorResponse);
 });
 
 //ADD USER
+// eslint-disable-next-line no-unused-vars
 router.post("/add"  , async(req, res, next) =>{
 let body = req.body;
 try{ 
@@ -80,6 +83,7 @@ res.status(Enum.HTTP_CODES.CREATED).json(Response.successResponse({success: true
 })
 
 //UPDATE USER
+ // eslint-disable-next-line no-unused-vars
  router.post("/update" , async(req, res, next) =>{
       let body = req.body;
       try{
@@ -132,6 +136,7 @@ res.status(Enum.HTTP_CODES.CREATED).json(Response.successResponse({success: true
      })
 
      //DELETE USER
+     // eslint-disable-next-line no-unused-vars
      router.post("/delete", async(req, res, next) =>{
        let body = req.body;
        try{
