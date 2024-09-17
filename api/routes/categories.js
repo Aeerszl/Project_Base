@@ -6,7 +6,7 @@ const CustomError = require("../lib/Error");
 const Enum = require("../config/Enum");
 // biz bazı degerleri herkesin anlayabilecigi standatta oturdugumuzda buna Enum diyoruz
 const AuditLogs = require("../lib/AuditLogs");
-
+const auth = require("../lib/auth")(); // auth fonksiyonunu çağırarak import edin
 
 /**
  * Create
@@ -15,11 +15,14 @@ const AuditLogs = require("../lib/AuditLogs");
  * Delete
  * CRUD
  */
-
+router.all("*", auth.authenticate(), (req, res, next) => {
+  next();
+    
+  });
 
 /* GET users listing. */
 // eslint-disable-next-line no-unused-vars
-router.get('/', async(req, res,next )=> {
+router.get('/',auth.checkRoles("category_view"), async(req, res,next )=> {
   try{
     let categories = await Categories.find();//await kulanacaksan async kullanmalısın
     res.json(Response.successResponse(categories));//bize donen veriyi json formatında döndürüyoruz
@@ -31,7 +34,7 @@ router.get('/', async(req, res,next )=> {
     res.status(errorResponse.code).json(Response.errorResponse(err));
             }
 });
-router.post("/add", async(req, res, )=> {
+router.post("/add",auth.checkRoles("category_add"), async(req, res, )=> {
      let body = req.body
      try{
 
@@ -51,7 +54,7 @@ router.post("/add", async(req, res, )=> {
      }
 });
 
-router.post("/update", async (req, res) => {
+router.post("/update",auth.checkRoles("category_update"), async (req, res) => {
   let body = req.body;
   try {
 
@@ -76,7 +79,7 @@ router.post("/update", async (req, res) => {
   }
 })
 
-router.post("/delete", async (req, res) => {
+router.post("/delete",auth.checkRoles("category_delete"), async (req, res) => {
 
   let body = req.body;
   try {

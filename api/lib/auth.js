@@ -3,9 +3,8 @@ const { ExtractJwt, Strategy } = require("passport-jwt");
 const Users = require("../db/models/Users");
 const UserRoles = require("../db/models/UserRoles");
 const RolePrivileges = require("../db/models/RolePrivileges");
-const Response = require("./Response");
-const { HTTP_CODES } = require("../config/Enum");
-
+const Response = require("./Response"); 
+const { HTTP_CODES } = require("../config/Enum"); 
 const config = require("../config");
 
 const privs = require("../config/role_privileges");

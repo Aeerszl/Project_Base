@@ -3,11 +3,17 @@ const moment = require("moment");//terminalde npm install moment yazarak indireb
 const Response = require("../lib/Response");
 const AuditLogs = require("../db/models/AuditLogs");  
 const router = express.Router();
+const auth = require("../lib/auth")();//fonksiyon oldugu icin () ile cagırıyoruz yoksa hata alırız
+
+router.all("*", auth.authenticate(), (req, res, next) => {
+next();
+  
+});
 
 // req bize gonderilen istegin icinde bulunan bilgileri tutar
 // res bize cevap vermemiz icin gerekli olan fonksiyonlari saglar
 // next bir sonraki router'e gecmemizi saglar
-router.post("/", async (req, res) => {
+router.post("/", auth.checkRoles("auditlogs_view"), async (req, res) => {
 try {
   let body = req.body;
   let query = {};

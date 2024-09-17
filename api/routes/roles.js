@@ -3,12 +3,20 @@ const  express = require("express");
 const router = express.Router();
 
 const Roles = require("../db/models/Roles");
-const RolePrivileges = require('../db/models/RolePrivileges'); // Modeli içe aktarın
+const RolePrivileges = require("../db/models/RolePrivileges");
 const Response = require("../lib/Response");
 const CustomError = require("../lib/Error");
 const Enum = require("../config/Enum");
 const role_privileges = require("../config/role_privileges");
-router.get("/", async (req, res) => {
+//const config = require("../config");
+//const UserRoles = require("../db/models/UserRoles");
+const auth = require("../lib/auth")();//fonksiyon oldugu icin () ile cagırıyoruz yoksa hata alırız
+
+router.all("*", auth.authenticate(), (req, res, next) => {
+next();
+  
+});
+router.get("/",auth.checkRoles("role_view"), async (req, res) => {
     try {
         let roles = await Roles.find();
         res.json(Response.successResponse(roles));
@@ -19,7 +27,7 @@ router.get("/", async (req, res) => {
 });
 
 
-router.post("/add", async (req, res) => {
+router.post("/add",auth.checkRoles("role_add"), async (req, res) => {
     let body = req.body;
        try {
             if(!body.role_name) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST,"Validation error!","role_name field must be filled")//Enum yapısı kullanarak hata mesajı oluşturabiliriz
@@ -56,7 +64,7 @@ router.post("/add", async (req, res) => {
    
    });
 
-   router.post("/update", async (req, res) => {
+   router.post("/update", auth.checkRoles("role_update"),async (req, res) => {
     let body = req.body;
        try {
             if(!body._id) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST,"Validation error!","_id field must be filled")//Enum yapısı kullanarak hata mesajı oluşturabiliriz
@@ -104,7 +112,7 @@ router.post("/add", async (req, res) => {
 
    //role i silerken aynı zamanda role_privileges tablosundan da silme işlemi yapılacak
    // farklı olarak bunu Role.js de yaptık burada da yapabilirdik
-   router.post("/delete", async (req, res) => {
+   router.post("/delete",auth.checkRoles("role_delete"),async (req, res) => {
     let body = req.body;
        try {
             if(!body._id) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST,"Validation error!","_id field must be filled")//Enum yapısı kullanarak hata mesajı oluşturabiliriz

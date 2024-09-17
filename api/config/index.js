@@ -1,9 +1,12 @@
+/* eslint-disable no-undef */
 //module.exports  bu dosya import edilebilir demek 
-module.exports = {  
+module.exports = {
     "PORT": process.env.PORT || "3000",
-    "LOG LEVEL": process.env.LOG_LEVEL || "debug",//LOG LEVEL değişkeni yoksa debug olacak
-"CONNECTION_STRING": process.env.CONNECTION_STRING || "mongodb://localhost:27017/ProjectBase",//CONNECTION_STRING değişkeni yoksa mongodb://localhost:27017 olacak
-
+    "LOG_LEVEL": process.env.LOG_LEVEL || "debug",
+    "CONNECTION_STRING": process.env.CONNECTION_STRING || "mongodb://localhost:27017/project_base_ytb",
+    "JWT": {
+        "SECRET": "123456",
+        "EXPIRE_TIME": !isNaN(parseInt(process.env.TOKEN_EXPIRE_TIME)) ? parseInt(process.env.TOKEN_EXPIRE_TIME) : 24 * 60 * 60 // 86400
+    },
 
 }
-
