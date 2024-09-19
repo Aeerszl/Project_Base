@@ -1,48 +1,47 @@
 const Enum = require("../config/Enum");
+const config = require("../config");
 const CustomError = require("./Error");
-/* {consturctor }: Bu fonksiyon, bir sınıfın (class) yeni bir
- örneği oluşturulduğunda otomatik olarak çağrılır.Sınıfın özelliklerini 
- başlatmak veya başlangıç ayarlarını yapmak için kullanılır.*/
+const i18n = new (require("./i18n"))(config.DEFAULT_LANG);
+
 class Response {
- constructor() { }// tanımlamasakta olurdu
- 
- static successResponse(data,code=200)// successResponse ozel bir kod belirtilmediyse 200 kodunu doner
- {
-   return  {
-             code,
-             data
-           }
- }
+    constructor() { }
 
-    static errorResponse(error) {
-      console.error(error); // hatayı console da gösterir
-        if( error instanceof CustomError){
-          return  {
-            code: error.code,
-            error: {
-              message:error.message,
-              description:error.description
-            }
-          }
-        } 
-        else if(error.message.includes("E11000")) {
-        return  {
-                code:Enum.HTTP_CODES.BAD_REQUEST,
-                error: {
-                  message:"AlreadyExist !",
-                  description:"Already exist !"
-                }
-              }
-        
+    static successResponse(data, code = 200) {
+        return {
+            code,
+            data
         }
-      return  {
-              code:Enum.HTTP_CODES.INT_SERVER_ERROR,
-              error: {
-                message:"Unknown error", 
-                description:error.message
+    }
 
-                    }
+    static errorResponse(error, lang) {
+        console.error(error);
+        if (error instanceof CustomError) {
+            return {
+                code: error.code,
+                error: {
+                    message: error.message,
+                    description: error.description
+                }
             }
-      }
-}// static kullanmasının sebebi module.exports = new Response; kullanmasıdır yani new Response yapmamıza gerek kalmaz
+        } else if (error.message.includes("E11000")) {
+            return {
+                code: Enum.HTTP_CODES.CONFLICT,
+                error: {
+                    message: i18n.translate("COMMON.ALREADY_EXIST", lang),
+                    description: i18n.translate("COMMON.ALREADY_EXIST", lang)
+                }
+            }
+        }
+
+        return {
+            code: Enum.HTTP_CODES.INT_SERVER_ERROR,
+            error: {
+                message: i18n.translate("COMMON.UNKNOWN_ERROR", lang),
+                description: error.message
+            }
+        }
+    }
+
+}
+
 module.exports = Response;

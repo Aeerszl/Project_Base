@@ -6,7 +6,10 @@ const CustomError = require("../lib/Error");
 const Enum = require("../config/Enum");
 // biz bazı degerleri herkesin anlayabilecigi standatta oturdugumuzda buna Enum diyoruz
 const AuditLogs = require("../lib/AuditLogs");
+const logger = require("../lib/logger/LoggerClass");
+const config = require('../config');
 const auth = require("../lib/auth")(); // auth fonksiyonunu çağırarak import edin
+const i18n = new (require("../lib/i18n"))(config.DEFAULT_LANG);
 
 /**
  * Create
@@ -34,12 +37,12 @@ router.get('/',auth.checkRoles("category_view"), async(req, res,next )=> {
     res.status(errorResponse.code).json(Response.errorResponse(err));
             }
 });
-router.post("/add",auth.checkRoles("category_add"), async(req, res, )=> {
+router.post("/add",/*auth.checkRoles("category_add"), */async(req, res, )=> {
      let body = req.body
      try{
 
-      if(!body.name) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST,"Validation error!","name field must be filled")//Enum yapısı kullanarak hata mesajı oluşturabiliriz
-        let category = new Categories({
+      if (!body.name) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, i18n.translate("COMMON.VALIDATION_ERROR_TITLE", req.user.language), i18n.translate("COMMON.FIELD_MUST_BE_FILLED", req.user.language, ["name"]));
+      let category = new Categories({
           name : body.name,
           is_active : true,
           crated_by : req.user?._id
@@ -49,6 +52,7 @@ router.post("/add",auth.checkRoles("category_add"), async(req, res, )=> {
      
         res.json(Response.successResponse({success:true}));//başarılı bir şekilde kaydedildiğinde bize success mesajı döndürüyoruz
      } catch(err){
+          logger.error(req.user?.email, "Categories", "Add", err);
           let errorResponse = Response.errorResponse(err);
           res.status(errorResponse.code).json(errorResponse);
      }
@@ -58,7 +62,7 @@ router.post("/update",auth.checkRoles("category_update"), async (req, res) => {
   let body = req.body;
   try {
 
-    if(!body._id) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST,"Validation error!","_id field must be filled")
+    if (!body.name) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, i18n.translate("COMMON.VALIDATION_ERROR_TITLE", req.user.language), i18n.translate("COMMON.FIELD_MUST_BE_FILLED", req.user.language, ["_id"]));
 
       let updates = {};
 
@@ -84,7 +88,7 @@ router.post("/delete",auth.checkRoles("category_delete"), async (req, res) => {
   let body = req.body;
   try {
   
-    if(!body._id) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST,"Validation error!","_id field must be filled")
+    if (!body.name) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, i18n.translate("COMMON.VALIDATION_ERROR_TITLE", req.user.language), i18n.translate("COMMON.FIELD_MUST_BE_FILLED", req.user.language, ["_id"]));
   
       await Categories.deleteOne({ _id: body._id });// mogosse da artık remove yerine deleteOne kullanıyoruz
 
