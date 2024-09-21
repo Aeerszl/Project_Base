@@ -10,7 +10,7 @@ const logger = require("../lib/logger/LoggerClass");
 const config = require('../config');
 const auth = require("../lib/auth")(); // auth fonksiyonunu çağırarak import edin
 const i18n = new (require("../lib/i18n"))(config.DEFAULT_LANG);
-
+const emitter = require("../lib/Emitter");
 /**
  * Create
  * Read
@@ -24,7 +24,6 @@ router.all("*", auth.authenticate(), (req, res, next) => {
   });
 
 /* GET users listing. */
-// eslint-disable-next-line no-unused-vars
 router.get('/',auth.checkRoles("category_view"), async(req, res,next )=> {
   try{
     let categories = await Categories.find();//await kulanacaksan async kullanmalısın
@@ -48,13 +47,16 @@ router.post("/add",/*auth.checkRoles("category_add"), */async(req, res, )=> {
           crated_by : req.user?._id
         });
         await category.save();
+
         AuditLogs.info(req.user?.email, "Categories", "Add", category);
+        logger.info(req.user?.email, "Categories", "Add", category);
+        emitter.getEmitter("notifications").emit("messages", { message: category.name + " is added" });
      
         res.json(Response.successResponse({success:true}));//başarılı bir şekilde kaydedildiğinde bize success mesajı döndürüyoruz
      } catch(err){
-          logger.error(req.user?.email, "Categories", "Add", err);
-          let errorResponse = Response.errorResponse(err);
-          res.status(errorResponse.code).json(errorResponse);
+        logger.error(req.user?.email, "Categories", "Add", err);
+        let errorResponse = Response.errorResponse(err);
+        res.status(errorResponse.code).json(errorResponse);
      }
 });
 

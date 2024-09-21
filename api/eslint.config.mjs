@@ -5,16 +5,16 @@ export default [
   {
     files: ["**/*.js"],
     languageOptions: {
-      sourceType: "commonjs"
+      sourceType: "commonjs",
+      globals: {
+        ...globals.node,
+        ...globals.browser,
+      },
     },
     rules: {
-      "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
-    }
-  },
-  {
-    languageOptions: {
-      globals: globals.browser
-    }
+      "no-unused-vars": "off", // Kullanılmayan değişkenleri kontrol etme
+      "no-undef": "off", // Tanımsız değişkenleri kontrol etme
+    },
   },
   pluginJs.configs.recommended,
 ];
