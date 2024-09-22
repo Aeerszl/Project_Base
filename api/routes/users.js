@@ -108,7 +108,7 @@ router.all("*", auth.authenticate(), (req, res, next) => {
     
   });
   
-router.get('/',auth.checkRoles("user_view"), async(req, res, next) =>{
+router.get('/',/*auth.checkRoles("user_view"),*/ async(req, res, next) =>{
 try{
   let users = await Users.find();
   res.json(Response.successResponse(users));
