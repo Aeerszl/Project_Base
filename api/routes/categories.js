@@ -11,6 +11,9 @@ const config = require('../config');
 const auth = require("../lib/auth")(); // auth fonksiyonunu çağırarak import edin
 const i18n = new (require("../lib/i18n"))(config.DEFAULT_LANG);
 const emitter = require("../lib/Emitter");
+const excelExport = new (require("../lib/Export"))();
+const fs = require("fs");
+
 /**
  * Create
  * Read
@@ -18,13 +21,13 @@ const emitter = require("../lib/Emitter");
  * Delete
  * CRUD
  */
-router.all("*", auth.authenticate(), (req, res, next) => {
+router.all("*", auth.authenticate(), (_req, _res, next) => {
   next();
     
   });
 
 /* GET users listing. */
-router.get('/',auth.checkRoles("category_view"), async(req, res,next )=> {
+router.get('/',auth.checkRoles("category_view"), async(_req, res,/*next*/ )=> {
   try{
     let categories = await Categories.find();//await kulanacaksan async kullanmalısın
     res.json(Response.successResponse(categories));//bize donen veriyi json formatında döndürüyoruz
@@ -36,7 +39,7 @@ router.get('/',auth.checkRoles("category_view"), async(req, res,next )=> {
     res.status(errorResponse.code).json(Response.errorResponse(err));
             }
 });
-router.post("/add",/*auth.checkRoles("category_add"), */async(req, res, )=> {
+router.post("/add",/*auth.checkRoles("category_add"),*/ async(req, res, )=> {
      let body = req.body
      try{
 
@@ -103,7 +106,30 @@ router.post("/delete",auth.checkRoles("category_delete"), async (req, res) => {
         res.status(errorResponse.code).json(errorResponse);
     }
   })
+  router.post("/export", auth.checkRoles("category_export"), async (req, res) => {
+    try {
+        let categories = await Categories.find({});
 
+
+        let excel = excelExport.toExcel(
+            ["NAME", "IS ACTIVE?", "USER_ID", "CREATED AT", "UPDATED AT"],//excel tablosunun başlıkları
+            ["name", "is_active", "created_by", "created_at", "updated_at"],//excel tablosuna yazılacak verilerin isimleri
+            categories
+        )
+
+        let filePath = __dirname + "/../tmp/categories_excel_" + Date.now() + ".xlsx";//diğer dosyalar ile karışmasın diye date.now ekledik
+
+        fs.writeFileSync(filePath, excel, "UTF-8");
+
+        res.download(filePath);
+
+       // fs.unlinkSync(filePath);//oluşturduğumuz dosyayı silmek için
+
+    } catch (err) { 
+        let errorResponse = Response.errorResponse(err);
+        res.status(errorResponse.code).json(Response.errorResponse(err));
+    }
+});
 module.exports = router;
 
 /* NOTLAR ✍️:
